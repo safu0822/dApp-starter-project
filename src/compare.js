@@ -15,7 +15,7 @@ const App = () => {
   console.log("currentAccount: ", currentAccount);
 
   // デプロイされたコントラクトのアドレスを保持する変数を作成
-  const contractAddress = "0x3d024dA65Ad3C485278673d2928f9EEc1Af723a7";
+  const contractAddress = "0xBE5DE0e248A1B1F9bE1FBb84af9208227cBd33D6";
   //ABIの中身を参照する変数を作成
   const contractABI = abi.abi;
 
@@ -34,12 +34,6 @@ const App = () => {
           contractABI,
           signer
         );
-
-        let count = await wavePortalContract.getTotalWaves();
-        console.log("Retrieved total wave count...", count.toNumber());
-
-        let contractBalance = await provider.getBalance(wavePortalContract.address);
-        console.log("Contract balance", ethers.utils.formatEther(contractBalance));
         /*コントラクトからgetAllWavesメソッドを呼び出す*/
         const waves = await wavePortalContract.getAllWaves();
 
@@ -176,35 +170,18 @@ const App = () => {
           contractABI,
           signer
         );
-        let count = await wavePortalContract.getTotalWaves();
+        let count = await wavePortalContract.getTotalWave (messageValue, {
+          gasLimit: 300000,
+        });
         console.log("Retrieved total wave count...", count.toNumber());
 
         //コントラクトに(wave)を書き込む
-        const waveTxn = await wavePortalContract.wave(messageValue, {
-          gasLimit: 300000,
-        });
+        const waveTxn = await wavePortalContract.wave();
         console.log("Minting...", waveTxn.hash);
         await waveTxn.wait();
         console.log("Minted--", waveTxn.hash);
         count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
-
-        let contractBalance_post = await provider.getBalance(
-          wavePortalContract.address
-        );
-
-        /**コントラクトのざんだかが減っていることを確認 */
-        if(contractBalance_post < contractBalance) { 
-          console.log("User won ETH!");
-        }else {
-          console.log("User didn't win ETH.");
-        }
-
-        console.log(
-          "Contract balance after wave:",
-          ethers.utils.formatEther(contractBalance_post)
-        );
-        
       } else {
         console.log("Ethereum object doesn't exist!");
       }
