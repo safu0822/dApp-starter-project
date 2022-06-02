@@ -15,7 +15,7 @@ const App = () => {
   console.log("currentAccount: ", currentAccount);
 
   // デプロイされたコントラクトのアドレスを保持する変数を作成
-  const contractAddress = "0x3d024dA65Ad3C485278673d2928f9EEc1Af723a7";
+  const contractAddress = "0xA719dB8F26c64924163EFaA713daC62d6EE99a20";
   //ABIの中身を参照する変数を作成
   const contractABI = abi.abi;
 
@@ -38,8 +38,13 @@ const App = () => {
         let count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
 
-        let contractBalance = await provider.getBalance(wavePortalContract.address);
-        console.log("Contract balance", ethers.utils.formatEther(contractBalance));
+        let contractBalance = await provider.getBalance(
+          wavePortalContract.address
+        );
+        console.log(
+          "Contract balance",
+          ethers.utils.formatEther(contractBalance)
+        );
         /*コントラクトからgetAllWavesメソッドを呼び出す*/
         const waves = await wavePortalContract.getAllWaves();
 
@@ -48,7 +53,7 @@ const App = () => {
         const wavesCleaned = waves.map((wave) => {
           return {
             address: wave.waver,
-            timestamp: (new Date(wave.timestamp * 1000)).toString(),
+            timestamp: new Date(wave.timestamp * 1000).toString(),
             message: wave.message,
           };
         });
@@ -73,7 +78,7 @@ const App = () => {
         ...prevState,
         {
           address: from,
-          timestamp: (new Date(timestamp * 1000)).toString(),
+          timestamp: new Date(timestamp * 1000).toString(),
           message: message,
         },
       ]);
@@ -179,6 +184,14 @@ const App = () => {
         let count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
 
+        let contractBalance = await provider.getBalance(
+          wavePortalContract.address
+        );
+        console.log(
+          "Contract balance:",
+          ethers.utils.formatEther(contractBalance)
+        );
+
         //コントラクトに(wave)を書き込む
         const waveTxn = await wavePortalContract.wave(messageValue, {
           gasLimit: 300000,
@@ -194,9 +207,9 @@ const App = () => {
         );
 
         /**コントラクトのざんだかが減っていることを確認 */
-        if(contractBalance_post < contractBalance) { 
+        if (contractBalance_post < contractBalance) {
           console.log("User won ETH!");
-        }else {
+        } else {
           console.log("User didn't win ETH.");
         }
 
@@ -204,7 +217,6 @@ const App = () => {
           "Contract balance after wave:",
           ethers.utils.formatEther(contractBalance_post)
         );
-        
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -238,8 +250,8 @@ const App = () => {
           </span>
         </div>
 
-         {/* メッセージボックスを実装*/}
-         {currentAccount && (
+        {/* メッセージボックスを実装*/}
+        {currentAccount && (
           <textarea
             name="messageArea"
             placeholder="メッセージはこちら"
@@ -266,7 +278,7 @@ const App = () => {
             Wave at Me
           </button>
         )}
-       
+
         {/* 履歴を表示する */}
         {currentAccount &&
           allWaves
